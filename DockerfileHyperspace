@@ -1,0 +1,8 @@
+FROM node:14-slim
+
+LABEL maintainer="Baptiste Hubert <baptiste.hubert@inria.fr>"
+LABEL org.opencontainers.image.vendor COAST
+
+RUN npm install -g hyperspace
+
+ENTRYPOINT ["hyperspace", "--host", "mute"]
