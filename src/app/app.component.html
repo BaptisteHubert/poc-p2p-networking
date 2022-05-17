@@ -3,5 +3,7 @@
 <p>Number of peers connected : {{ numberOfPeers }} </p>
 
 
-<textarea id="textArea" rows="25" cols="100"></textarea>
-<br>
+<textarea id="textArea" rows="25" cols="100" readonly></textarea>
+<input type="text" id="textToAdd" required minlength="1" maxlength="8" size="10">
+<button type=submit (click)="addTextToTextArea()">Add text</button>
+

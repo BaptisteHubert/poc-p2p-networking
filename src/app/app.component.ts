@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-const HyperspaceClient = require('@hyperspace/client')
+import { hyperSDK } from 'src/hypercore/hyperSDK';
+import { v4 as uuid } from 'uuid';
 
 @Component({
   selector: 'app-root',
@@ -7,15 +8,35 @@ const HyperspaceClient = require('@hyperspace/client')
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+
+  
   title = 'poc-p2p-networking';
 
-  public numberOfPeers : number;
+  public numberOfPeers : number = 1;
 
   public typeOfNetwork : string = "";
 
-  constructor(){
-    this.numberOfPeers = 1
+  public hyperSDK : any
 
-    const client = new HyperspaceClient()
+  constructor(){
+    const joiningKey = uuid()
+    const hypSDK = new hyperSDK(joiningKey)
+    
+    hypSDK.initAndRun()
+    this.hyperSDK = hypSDK
+   }
+
+
+
+  addTextToTextArea(){
+    const textArea = document.querySelector('#textArea') as HTMLInputElement;
+    const textToAdd = document.querySelector('#textToAdd') as HTMLInputElement;
+    if ((textArea && textToAdd) != null && textToAdd.value != ""){ 
+      this.hyperSDK.addDataToHypercore(textToAdd.value)
+      textArea.value += textToAdd.value + "\n"
+    }
+    textToAdd.value = ""
+
   }
+
 }
