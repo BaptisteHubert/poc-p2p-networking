@@ -1,3 +1,4 @@
+/* Removing the hyperCore implementation as we focus on libp2p
 const SDK = require('/node_modules/hyper-sdk/hyper-sdk-bundle.js')
 
 export class hyperSDK{
@@ -37,7 +38,7 @@ export class hyperSDK{
             storage: null
         })
 
-        /*
+        
         coreToSeed.append("1")
         console.log(coreToSeed)
         coreToSeed.append("2")
@@ -45,7 +46,7 @@ export class hyperSDK{
         console.log(coreToSeed)
         coreToSeed.append("3")
         
-        console.log(coreToSeed)*/
+        console.log(coreToSeed)
 
         this.hyperCore = coreToSeed
 
@@ -73,4 +74,4 @@ export class hyperSDK{
 	        }
         })
     }
-}
+}*/
