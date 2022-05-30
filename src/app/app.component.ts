@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 //import { hyperSDK } from 'src/hypercore/hyperSDK';
 import { v4 as uuid } from 'uuid';
+import { libp2pNetworking } from '../libp2p/libp2pNetworking';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +17,8 @@ export class AppComponent {
 
   public typeOfNetwork : string = "";
 
+  public libp2pInstance : libp2pNetworking
+
   //public hyperSDK : any
 
   constructor(){
@@ -25,6 +28,8 @@ export class AppComponent {
     hypSDK.initAndRun()
     this.hyperSDK = hypSDK
     */
+   this.libp2pInstance = new libp2pNetworking()
+   this.libp2pInstance.initAndRun()
    }
 
 
