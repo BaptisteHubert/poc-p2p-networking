@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 //import { hyperSDK } from 'src/hypercore/hyperSDK';
 import { v4 as uuid } from 'uuid';
-import { libp2pNetworking } from '../libp2p/libp2pNetworking';
 
+import { libp2pWebRTCStar } from 'src/libp2p/libp2pWebrtcStar'
+
+import { libp2pFloodsub } from 'src/libp2p/libp2pFloodsub'
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -17,7 +19,10 @@ export class AppComponent {
 
   public typeOfNetwork : string = "";
 
-  public libp2pInstance : libp2pNetworking
+  public libp2pInstanceWRTCS : libp2pWebRTCStar
+
+
+  public libp2pInstanceFS : libp2pFloodsub 
 
   //public hyperSDK : any
 
@@ -28,8 +33,10 @@ export class AppComponent {
     hypSDK.initAndRun()
     this.hyperSDK = hypSDK
     */
-   this.libp2pInstance = new libp2pNetworking()
-   this.libp2pInstance.initAndRun()
+   this.libp2pInstanceWRTCS = new libp2pWebRTCStar()
+   this.libp2pInstanceFS = new libp2pFloodsub()
+   this.libp2pInstanceWRTCS.initAndRun()
+   //this.libp2pInstance.initAndRun()
    }
 
 
