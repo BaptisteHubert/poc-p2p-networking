@@ -48,7 +48,11 @@ export class AppComponent {
       textArea.value += textToAdd.value + "\n"
     }
     textToAdd.value = ""
+  }
 
+  updateConnectedPeers(){
+    this.numberOfPeers = this.libp2pInstanceWRTCS.getNumberOfConnectedRemotePeers() + 1
+    this.libp2pInstanceWRTCS.createStreamWithAllPeers()
   }
 
 }
