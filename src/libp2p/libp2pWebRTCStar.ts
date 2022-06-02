@@ -7,8 +7,6 @@ import { Multiaddr } from '@multiformats/multiaddr'
 
 import { Noise } from '@chainsafe/libp2p-noise'
 
-
-
 export class libp2pWebRTCStar {
 
     libp2pInstance : any
@@ -23,11 +21,7 @@ export class libp2pWebRTCStar {
         const webRtcStar = new WebRTCStar()
         // Create our libp2p node
         const libp2p = await createLibp2p({
-
             addresses: {
-              // Add the signaling server address, along with our PeerId to our multiaddrs list
-              // libp2p will automatically attempt to dial to the signaling server so that it can
-              // receive inbound connections from other peers
               listen: [
                 '/ip4/127.0.0.1/tcp/8001/wss/p2p-webrtc-star'
               ]
@@ -89,27 +83,25 @@ export class libp2pWebRTCStar {
     getNumberOfConnectedRemotePeers(){
       return this.libp2pInstance.connectionManager.peerValues.size
     }
-
     async sendSomethingToMyConnectedPeers(something : string){
-      // Create a new libp2p node on localhost with a randomly chosen port
       for (let key of this.libp2pInstance.connectionManager.peerValues.keys()) {
         console.log(key);
         let addr = "/ip4/127.0.0.1/tcp/8001/p2p/" + key
         const peerAddr = new Multiaddr(addr)
-        const { stream } = await this.libp2pInstance.dialProtocol(peerAddr, '/chat')
+        const { stream } = await this.libp2pInstance.dialProtocol(peerAddr, '/chat/1.0.0')
 
         // Read the stream and output to console
         this.streamToConsole(stream)
-        
       }
     }
+
 
     streamToConsole(stream : any) {
       console.log(stream)
     }
 
-    getSomethingFromMyConnectedPeers(){
-      console.log("I shall receive something")
+    async receiveSomethingFromMyConnectedPeers(){
+      //TODO
     }
 
 }
