@@ -43,7 +43,6 @@ export class AppComponent {
 
   async updateConnectedPeers(){
     this.numberOfPeers = this.libp2pInstanceWRTCS.getNumberOfConnectedRemotePeers() + 1
-    await this.libp2pInstanceWRTCS.handleChattingProtocol()
     this.libp2pInstanceWRTCS.sendSomethingToMyConnectedPeers("test")
   }
 

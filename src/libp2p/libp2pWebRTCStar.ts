@@ -9,10 +9,12 @@ import { Noise } from '@chainsafe/libp2p-noise'
 
 import { pipe } from 'it-pipe'
 
+import { consume } from 'streaming-iterables'
+
 
 import { toString as uint8ArrayToString } from 'uint8arrays/to-string'
 import { fromString as uint8ArrayFromString } from 'uint8arrays/from-string'
-const PeerId = require('peer-id')
+import PeerId from 'peer-id'
 
 
 //import { ProtocolHandler } from '../types/libp2p/index.d.ts'
@@ -72,75 +74,90 @@ export class libp2pWebRTCStar {
 
         await libp2p.start()
 
+        //Handling the protocol used to dial other peers
+        //@ts-ignore
+        const handler = ({ connection, stream} ) => {
+
+          // use stream or connection according to the needs
+          console.log(`handle chat from ${connection?.remotePeer.toB58String()}`)
+
+          const handledStream = stream
+          //@ts-ignore
+          pipe(handledStream, async function (source: AsyncGenerator<any, any, any>) {
+            for await (const msg of source) {
+              console.log(`Received message: ${msg}`)
+            }
+            // Causes `consume` in `sendMessage` to close the stream, as a sort
+            // of ACK:
+            pipe([], handledStream)
+          })
+        }
+        
+        await libp2p.handle('/chat/1.0.0', handler)
+
+        
+
+        //this.handleChattingProtocol()
         this.libp2pInstance = libp2p
     }
 
+    
     getAllConnectedPeers(){
       /*
       console.log("Map that saves connected Peers", this.libp2pInstance.connectionManager.peerValues)
       console.log("All entries", this.libp2pInstance.connectionManager.peerValues.entries())*/
+      console.log("All my connected peers will be listed under : ")
       for (let key of this.libp2pInstance.connectionManager.peerValues.keys()) {
         console.log(key);
       }
+      
     }
 
-
-
-
-    //Chatting logic function
-
-    async handleChattingProtocol(){
-      /*
-      console.log("handleChatting starting") 
-      const protocol = PROTOCOL
-
-      //@ts-ignore
-      
-      const handleChat: any = async ({ connection, stream }) => {
-        console.log(`handle chat from ${connection?.remotePeer.toB58String()}`)
-        const handledStream = stream
-        //@ts-ignore
-        pipe(handledStream, async function (source: AsyncGenerator<any, any, any>) {
-          for await (const msg of source) {
-            console.log(`Received message: ${msg}`)
-          }
-          // Causes `consume` in `sendMessage` to close the stream, as a sort
-          // of ACK:
-          pipe([], handledStream)
-        })
-      }
-      // Tell libp2p how to handle our protocol
-      await this.libp2pInstance.handle([protocol])
-      console.log("handleChatting done")
-      
-*/
-    }
 
 
     async sendSomethingToMyConnectedPeers(something : string){
-
-      //The peer store are stored here
-      console.log(this.libp2pInstance.connectionManager.components.peerStore)
-      console.log
-
-
-/*
+      //The peer store is stored here
+      
+      //Junk Code
+      /*
+        console.log(this.libp2pInstance.connectionManager.components.peerStore) -> The peerstore
+        console.log(this.libp2pInstance.peerStore.protoBook.get(PeerId.parse(key)))
+      */
+     something = "HEY THIS MESSAGE IS SENT OVER PEERS"
+     const protocol = PROTOCOL
+      // Logic for sending data to connected peers
       for (let key of this.libp2pInstance.connectionManager.peerValues.keys()) {
+        
         console.log("I'm sending [", something, "] to ", key);
 
         let addr = "/ip4/127.0.0.1/tcp/8001/wss/p2p-webrtc-star/p2p/" + key
         const peerAddr = new Multiaddr(addr)
-        console.log(peerAddr.toString())
-        console.log(this.libp2pInstance.peerStore.protoBook.get(PeerId.parse(key)))
+        
+        
 
-        console.log("about to create the stream")
-        const protocol = PROTOCOL
-        const { stream } = await this.libp2pInstance.dialProtocol(peerAddr, [protocol])
-        console.log("The stream was created : GREAT SUCCESS")
-        let dataArray : Uint8Array
-        pipe(
+        try {
+          const { stream } = await this.libp2pInstance.dialProtocol(peerAddr, [protocol])
+          console.log("The stream was created : GREAT SUCCESS")
+          //@ts-ignore
+          await pipe([something], stream)
+        } catch (err) {
+          console.log('Send failed; please check console for details.')
+          console.error('Could not send the message', err)
+        }
+        
+        
+        
+        
+        
+        //let dataArray : Uint8Array
+        //dataArray = uint8ArrayFromString(something)
+
+        
+        
+        /*
+        await pipe(
           // Source data
-          dataArray = uint8ArrayFromString('HEY THIS MESSAGE IS SENT OVER PEERS'),
+          dataArray,
           // Write to the stream, and pass its output to the next function
           stream,
           // Sink function
@@ -154,7 +171,9 @@ export class libp2pWebRTCStar {
             }
           }
         )
-      }*/
+        */
+
+      }
     }
 
 
