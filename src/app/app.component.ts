@@ -20,7 +20,6 @@ export class AppComponent {
 
   public libp2pInstanceWRTCS : libp2pWebRTCStar
 
-
   public libp2pInstanceFS : libp2pFloodsub 
 
   constructor(){
@@ -30,11 +29,12 @@ export class AppComponent {
     this.libp2pInstanceWRTCS.initAndRun()
   }
 
-
-
   addTextToTextArea(){
     const textArea = document.querySelector('#textArea') as HTMLInputElement;
     const textToAdd = document.querySelector('#textToAdd') as HTMLInputElement;
+
+    this.libp2pInstanceWRTCS.sendSomethingToMyConnectedPeers(textToAdd.value)
+
     if ((textArea && textToAdd) != null && textToAdd.value != ""){ 
       textArea.value += textToAdd.value + "\n"
     }
@@ -43,7 +43,7 @@ export class AppComponent {
 
   async updateConnectedPeers(){
     this.numberOfPeers = this.libp2pInstanceWRTCS.getNumberOfConnectedRemotePeers() + 1
-    this.libp2pInstanceWRTCS.sendSomethingToMyConnectedPeers("test")
+    this.libp2pInstanceWRTCS.getAllConnectedPeers()
   }
 
 }
