@@ -4,7 +4,7 @@ import { Noise } from '@chainsafe/libp2p-noise'
 
 export class libp2pFloodsub{
     constructor(){
-        console.log("Libp2p Floodsub")
+        console.log("Libp2p Floodsub - Status - TODO")
     }
 
     async initAndRun(){

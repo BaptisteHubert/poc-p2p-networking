@@ -8,6 +8,8 @@ import { pipe } from 'it-pipe'
 
 import { fromString, toString} from 'uint8arrays'
 
+import { AppComponent } from 'src/app/app.component'
+
 const PROTOCOL = '/chat/1.0.0'
 
 export class libp2pWebRTCStar {
@@ -16,9 +18,12 @@ export class libp2pWebRTCStar {
 
     addrTest : Multiaddr
 
-    constructor(){
-        console.log("Libp2p WebRTC Star")
+    public ac : AppComponent
+
+    constructor(appComponent : AppComponent){
+        console.log("Libp2p WebRTC Star - Status - Working")
         this.addrTest = new Multiaddr()
+        this.ac = appComponent
     }
 
     async initAndRun(){
@@ -66,20 +71,22 @@ export class libp2pWebRTCStar {
         console.log("my libp2p id is ",libp2p.peerId.toString())
 
         await libp2p.start()
-
-      
+        
         //Handling the protocol used to dial other peers
         //@ts-ignore
         const handler = ({ connection, stream} ) => {
+          let me = this
           console.log("I receive")
           // use stream or connection according to the needs
           console.log("handle chat from ", connection.remotePeer.string)
           const handledStream = stream
+          console.log(handledStream)
           //@ts-ignore
           pipe(stream, async function (source: AsyncGenerator<any, any, any>) {
             for await (const msg of source) {
               let sourceToString = toString(msg)
               console.log(`RECEIVED MESSAGE AS : ${sourceToString}`)
+              me.ac.receiveTextInTextArea(connection.remotePeer.string, sourceToString)
             }
           })
         }
