@@ -60,12 +60,14 @@ export class libp2pWebRTCStar {
         libp2p.connectionManager.addEventListener('peer:connect', (evt) => {
             const connection = evt.detail
             this.logPeersInfo(`Connected to ${connection.remotePeer.toString()}`)
+            this.ac.updateConnectedPeers()
         })
         
         // Listen for peers disconnecting
         libp2p.connectionManager.addEventListener('peer:disconnect', (evt) => {
             const connection = evt.detail
             this.logPeersInfo(`Disconnected from ${connection.remotePeer.toString()}`)
+            this.ac.updateConnectedPeers()
         })
 
         console.log("my libp2p id is ",libp2p.peerId.toString())
@@ -92,8 +94,6 @@ export class libp2pWebRTCStar {
         }
         
         await libp2p.handle('/chat/1.0.0', handler)
-        
-
         this.libp2pInstance = libp2p
     }
 
@@ -118,6 +118,7 @@ export class libp2pWebRTCStar {
     }
 
     getNumberOfConnectedRemotePeers(){
+      console.log("nummber of connnected remote peers",this.libp2pInstance.connectionManager.peerValues.size)
       return this.libp2pInstance.connectionManager.peerValues.size
     }
 

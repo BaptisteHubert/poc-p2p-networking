@@ -16,6 +16,8 @@ export class AppComponent {
 
   public numberOfPeers : number = 1;
 
+  public numberOfPeersConnectedToMe : number = 0
+
   public typeOfNetwork : string = "";
 
   public libp2pInstanceWRTCS : libp2pWebRTCStar
@@ -46,8 +48,13 @@ export class AppComponent {
     textArea.value += sender.substring(0,15) +" : " + textReceived + "\n"
   }
 
-  async updateConnectedPeers(){
+  updateConnectedPeers(){
     this.numberOfPeers = this.libp2pInstanceWRTCS.getNumberOfConnectedRemotePeers() + 1
+    this.numberOfPeersConnectedToMe = this.libp2pInstanceWRTCS.getNumberOfConnectedRemotePeers()
+  }
+
+
+  async logInfoConnectedPeers(){
     this.libp2pInstanceWRTCS.getAllConnectedPeers()
   }
 }
