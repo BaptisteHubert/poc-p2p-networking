@@ -28,7 +28,7 @@
     "@libp2p/bootstrap": "^1.0.6",
     "@libp2p/floodsub": "^1.0.7",
     "@libp2p/mplex": "^1.1.0",
-    "@libp2p/webrtc-star": "^1.0.12",
+    "@libp2p/webrtc-star": "file:libp2p-webrtc-star-3.0.0.tgz",
     "@libp2p/webrtc-star-protocol": "^1.0.2",
     "@libp2p/websockets": "^1.0.9",
     "libp2p": "^0.37.0",

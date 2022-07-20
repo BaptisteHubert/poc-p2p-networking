@@ -38,6 +38,7 @@ export class libp2pWebRTCStar {
             },
             transports: [
               new WebSockets(),
+              //@ts-ignore
               webRtcStar
             ],
             connectionEncryption: [new Noise()],
