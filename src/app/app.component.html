@@ -1,10 +1,23 @@
 <h1>Proof of concept for peer to peer networking using libp2p or hypercore</h1>
 
+<p>My libp2p id is <output id="myLibp2pId"></output></p>
+
 <p>Number of peers connected : {{ numberOfPeers }} </p>
 <p>Number of peers connected to me : {{ numberOfPeersConnectedToMe }} </p>
 
 <textarea id="textArea" rows="25" cols="100" readonly></textarea>
-<input type="text" id="textToAdd" required minlength="1" maxlength="8" size="10">
-<button type=submit (click)="addTextToTextArea()">Send</button>
-<button type=submit (click)="logInfoConnectedPeers()">get Connected Peers</button>
+<div id="user_input_options">
+    <div id="user_input_text">
+        <input type="text" id="textToAdd" required minlength="1" maxlength="8" size="10">
+        <button type=submit (click)="addTextToTextArea()">Send this text</button>
+    </div>
+    <div id="user_input_sending_strategy" tyle="display: inline">
+        <p>You are currently sending the text to <button id="buttonSendingStrategy"type=submit (click)="changeSendingStrategy()">everyone</button></p>
+        
+    </div>
+
+    <div id="user_input_peers_infos">
+        <button type=submit (click)="logInfoConnectedPeers()">get Connected Peers</button>
+    </div>
+</div>
 

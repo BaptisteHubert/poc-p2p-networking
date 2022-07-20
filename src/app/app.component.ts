@@ -45,7 +45,7 @@ export class AppComponent {
 
   receiveTextInTextArea(sender : string, textReceived : string){
     const textArea = document.querySelector('#textArea') as HTMLInputElement;
-    textArea.value += sender.substring(0,15) +" : " + textReceived + "\n"
+    textArea.value += sender.slice(-8) +" : " + textReceived + "\n"
   }
 
   updateConnectedPeers(){
@@ -53,8 +53,12 @@ export class AppComponent {
     this.numberOfPeersConnectedToMe = this.libp2pInstanceWRTCS.getNumberOfConnectedRemotePeers()
   }
 
+  changeSendingStrategy(){
+    this.libp2pInstanceWRTCS.changeChangeSendingStrategy(document.getElementById("buttonSendingStrategy")!.innerText)
+  }
 
   async logInfoConnectedPeers(){
     this.libp2pInstanceWRTCS.getAllConnectedPeers()
   }
+
 }

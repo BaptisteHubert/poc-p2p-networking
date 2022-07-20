@@ -20,10 +20,17 @@ export class libp2pWebRTCStar {
 
     public ac : AppComponent
 
+    sendingOptions : string
+
+    
+    listOfKnownRemotePeer : string[]
+
     constructor(appComponent : AppComponent){
         console.log("Libp2p WebRTC Star - Status - Working")
         this.addrTest = new Multiaddr()
         this.ac = appComponent
+        this.sendingOptions = "everyone"
+        this.listOfKnownRemotePeer = []
     }
 
     async initAndRun(){
@@ -53,24 +60,30 @@ export class libp2pWebRTCStar {
         /*
         libp2p.addEventListener('peer:discovery', (evt) => {
             const peer = evt.detail
-            this.logPeersInfo(`Found peer ${peer.id.toString()}`)
+            console.log(`Found peer ${peer.id.toString()}`)
         })
         */
 
         // Listen for new connections to peers
         libp2p.connectionManager.addEventListener('peer:connect', (evt) => {
             const connection = evt.detail
-            this.logPeersInfo(`Connected to ${connection.remotePeer.toString()}`)
+            console.log(`Connected to ${connection.remotePeer.toString()}`)
+            this.listOfKnownRemotePeer.push(connection.remotePeer.toString())
             this.ac.updateConnectedPeers()
         })
         
         // Listen for peers disconnecting
         libp2p.connectionManager.addEventListener('peer:disconnect', (evt) => {
             const connection = evt.detail
-            this.logPeersInfo(`Disconnected from ${connection.remotePeer.toString()}`)
+            console.log(`Disconnected from ${connection.remotePeer.toString()}`)
+            const indexOfPeer = this.listOfKnownRemotePeer.indexOf(connection.remotePeer.toString())
+            if (indexOfPeer != -1){
+              this.listOfKnownRemotePeer.splice(indexOfPeer,1)
+            }
             this.ac.updateConnectedPeers()
         })
 
+        document.getElementById("myLibp2pId")!.innerText = libp2p.peerId.toString()
         console.log("my libp2p id is ",libp2p.peerId.toString())
 
         await libp2p.start()
@@ -99,18 +112,38 @@ export class libp2pWebRTCStar {
     }
 
     async sendSomethingToMyConnectedPeers(something : string){
-      for (let key of this.libp2pInstance.connectionManager.peerValues.keys()) {
-        let addr = "/ip4/127.0.0.1/tcp/8001/wss/p2p-webrtc-star/p2p/" + key
-        const peerAddr = new Multiaddr(addr)
-        try {
-          console.log("I send")
-          const { stream } = await this.libp2pInstance.dialProtocol(peerAddr, [PROTOCOL])
-          //@ts-ignore
-          await pipe([fromString(something)], stream)
-        } catch (err) {
-          console.error('Could not send the message', err)
+      let addr = "/ip4/127.0.0.1/tcp/8001/wss/p2p-webrtc-star/p2p/"
+      
+      if (this.sendingOptions == "everyone"){
+        for (let key of this.libp2pInstance.connectionManager.peerValues.keys()) {
+          const peerAddr = new Multiaddr(addr + key)
+          this.sendMessage(something, peerAddr)
         }
+      } else {
+        //Choosing a random value in the known peers list
+        const random = Math.floor(Math.random() * this.listOfKnownRemotePeer.length);
+        this.sendMessage(something, new Multiaddr(addr + this.listOfKnownRemotePeer[random]))
       }
+    }
+
+    async sendMessage(messageToSend : string, peerMultiAddr : Multiaddr){
+      try {
+        const { stream } = await this.libp2pInstance.dialProtocol(peerMultiAddr, [PROTOCOL])
+        //@ts-ignore
+        await pipe([fromString(messageToSend)], stream)
+      } catch (err) {
+        console.error('Could not send the message', err)
+      }
+    }
+
+    changeChangeSendingStrategy(buttonTextValue : string){
+      if (buttonTextValue == "everyone"){
+        this.sendingOptions = "a random peer"
+      } else {
+        this.sendingOptions = "everyone"
+      }
+      document.getElementById('buttonSendingStrategy')!.innerHTML = this.sendingOptions
+
     }
 
     //functions that returns informations about the network
@@ -119,17 +152,21 @@ export class libp2pWebRTCStar {
     }
 
     getNumberOfConnectedRemotePeers(){
-      console.log("nummber of connnected remote peers",this.libp2pInstance.connectionManager.peerValues.size)
       return this.libp2pInstance.connectionManager.peerValues.size
     }
 
     getAllConnectedPeers(){
       console.log("Map that saves connected Peers", this.libp2pInstance.connectionManager.peerValues)
       console.log("All entries", this.libp2pInstance.connectionManager.peerValues.entries())
-      console.log("All my connected peers will be listed under : ")
+      console.log("All my connected peers (according to libp2p) : ")
       for (let key of this.libp2pInstance.connectionManager.peerValues.keys()) {
         console.log(key);
       }
+      console.log("All my stored peers : ")
+      for (let key of this.listOfKnownRemotePeer){
+        console.log(key)
+      }
+
     }
 
 }
