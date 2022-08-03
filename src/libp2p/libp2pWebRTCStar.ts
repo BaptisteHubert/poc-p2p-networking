@@ -36,23 +36,48 @@ export class libp2pWebRTCStar {
     async initAndRun(){
         console.log("using WebRTCStar, peers will be able to connect")
         const webRtcStar = new WebRTCStar()
+        const transportKey = WebRTCStar.prototype[Symbol.toStringTag]
         // Create our libp2p node
         const libp2p = await createLibp2p({
             addresses: {
               listen: [
-                '/ip4/127.0.0.1/tcp/8001/wss/p2p-webrtc-star'
+                //local address - '/ip4/127.0.0.1/tcp/4201/wss/p2p-webrtc-star'
+                //wss adress over ngrok tcp '/dns6/5.tcp.eu.ngrok.io/tcp/10210/ws/p2p-webrtc-star'
+                //wss adress over ngrok http 
+                '/dns4/mutehost.loria.fr/tcp/8012/wss/p2p-webrtc-star/'
               ]
             },
             transports: [
-              new WebSockets(),
+              //@ts-ignore
+              //new WebSockets(),
               //@ts-ignore
               webRtcStar
             ],
             connectionEncryption: [new Noise()],
+            //@ts-ignore
             streamMuxers: [new Mplex()],
             peerDiscovery: [
               webRtcStar.discovery
             ]
+            ,
+            config: {
+              transport: {
+                [transportKey]: {
+                  listenerOptions: {
+                    config: {
+                      iceServers: [
+                        {"urls": "stun:openrelay.metered.ca:80"},
+                        {"urls": ["turn:openrelay.metered.ca:80"], "username": "openrelayproject", "credential": "openrelayproject"},
+                        {"urls": ["turn:openrelay.metered.ca:443"], "username": "openrelayproject", "credential": "openrelayproject"},
+                        {"urls": ["turn:openrelay.metered.ca:443?transport=tcp"], "username": "openrelayproject", "credential": "openrelayproject"}
+                        
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+
         })
 
         /* Following event listener are there to see what's happening on the network*/
