@@ -26,7 +26,7 @@ export class libp2pWebRTCStar {
     listOfKnownRemotePeer : string[]
 
     constructor(appComponent : AppComponent){
-        console.log("Libp2p WebRTC Star - Status - Working")
+        //console.log("Libp2p WebRTC Star - Status - Working")
         this.addrTest = new Multiaddr()
         this.ac = appComponent
         this.sendingOptions = "everyone"
