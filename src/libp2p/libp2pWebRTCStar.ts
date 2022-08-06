@@ -44,7 +44,7 @@ export class libp2pWebRTCStar {
                 //local address - '/ip4/127.0.0.1/tcp/4201/wss/p2p-webrtc-star'
                 //wss adress over ngrok tcp '/dns6/5.tcp.eu.ngrok.io/tcp/10210/ws/p2p-webrtc-star'
                 //wss adress over ngrok http 
-                '/dns4/mutehost.loria.fr/tcp/8012/wss/p2p-webrtc-star/'
+                '/dns4/mutehost.loria.fr/tcp/8014/wss/p2p-webrtc-star/'
               ]
             },
             transports: [
@@ -137,7 +137,7 @@ export class libp2pWebRTCStar {
     }
 
     async sendSomethingToMyConnectedPeers(something : string){
-      let addr = "/ip4/127.0.0.1/tcp/8001/wss/p2p-webrtc-star/p2p/"
+      let addr = "/dns4/mutehost.loria.fr/tcp/8014/wss/p2p-webrtc-star/p2p/"
       
       if (this.sendingOptions == "everyone"){
         for (let key of this.libp2pInstance.connectionManager.peerValues.keys()) {

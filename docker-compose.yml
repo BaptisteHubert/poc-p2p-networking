@@ -1,0 +1,22 @@
+version: '3.9'
+
+services:
+
+  poc-libp2p-app:
+    image: poc-libp2p-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8013:8013
+    depends_on:
+      - poc-libp2p-signaling
+
+  poc-libp2p-signaling:
+    image: poc-libp2p-signaling
+    build:
+      context: .
+      dockerfile: DockerfileWebRTCStarSignalingServer
+    ports:
+      - 8015:8015
+
