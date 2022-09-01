@@ -9,13 +9,3 @@ services:
       dockerfile: Dockerfile
     ports:
       - 8017:8017
-    depends_on:
-      - poc-turn-issue-signaling
-
-  poc-turn-issue-signaling:
-    image: poc-turn-issue-signaling
-    build:
-      context: .
-      dockerfile: DockerfileSignaling
-    ports:
-      - 8019:8019
