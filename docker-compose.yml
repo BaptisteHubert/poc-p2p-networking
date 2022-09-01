@@ -2,20 +2,10 @@ version: '3.9'
 
 services:
 
-  poc-turn-issue-app:
-    image: poc-turn-issue-app
+  poc-turn-issue-w-o-turn-app:
+    image: poc-turn-issue-w-o-turn-app
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 8017:8017
-    depends_on:
-      - poc-turn-issue-signaling
-
-  poc-turn-issue-signaling:
-    image: poc-turn-issue-signaling
-    build:
-      context: .
-      dockerfile: DockerfileSignaling
-    ports:
-      - 8019:8019
+      - 8007:8007
