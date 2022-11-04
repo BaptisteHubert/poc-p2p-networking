@@ -40,11 +40,9 @@ export class libp2pWebRTCStar {
         const libp2p = await createLibp2p({
             addresses: {
               listen: [
-                //local address - 
-                '/ip4/127.0.0.1/tcp/4201/wss/p2p-webrtc-star'
-                //wss adress over ngrok tcp '/dns6/5.tcp.eu.ngrok.io/tcp/10210/ws/p2p-webrtc-star'
+                //local address - '/ip4/127.0.0.1/tcp/4201/wss/p2p-webrtc-star'
                 //wss adress over ngrok http 
-                //'/dns4/mutehost.loria.fr/tcp/8014/wss/p2p-webrtc-star/'
+                '/dns4/mutehost.loria.fr/tcp/8014/wss/p2p-webrtc-star/'
               ]
             },
             transports: [
