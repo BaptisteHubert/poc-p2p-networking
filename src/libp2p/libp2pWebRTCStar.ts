@@ -1,7 +1,6 @@
 import { createLibp2p } from 'libp2p'
-import { WebSockets } from '@libp2p/websockets'
 import { WebRTCStar } from '@libp2p/webrtc-star'
-import { Mplex } from '@libp2p/mplex'
+import { Mplex  } from '@libp2p/mplex'
 import { Multiaddr } from '@multiformats/multiaddr'
 import { Noise } from '@chainsafe/libp2p-noise'
 import { pipe } from 'it-pipe'
@@ -41,22 +40,21 @@ export class libp2pWebRTCStar {
         const libp2p = await createLibp2p({
             addresses: {
               listen: [
-                //local address - '/ip4/127.0.0.1/tcp/4201/wss/p2p-webrtc-star'
+                //local address - 
+                '/ip4/127.0.0.1/tcp/4201/wss/p2p-webrtc-star'
                 //wss adress over ngrok tcp '/dns6/5.tcp.eu.ngrok.io/tcp/10210/ws/p2p-webrtc-star'
                 //wss adress over ngrok http 
-                '/dns4/mutehost.loria.fr/tcp/8014/wss/p2p-webrtc-star/'
+                //'/dns4/mutehost.loria.fr/tcp/8014/wss/p2p-webrtc-star/'
               ]
             },
             transports: [
               //@ts-ignore
-              //new WebSockets(),
-              //@ts-ignore
               webRtcStar
             ],
             connectionEncryption: [new Noise()],
-            //@ts-ignore
             streamMuxers: [new Mplex()],
             peerDiscovery: [
+              //@ts-ignore
               webRtcStar.discovery
             ]
             ,
@@ -70,15 +68,14 @@ export class libp2pWebRTCStar {
                         {"urls": ["turn:openrelay.metered.ca:80"], "username": "openrelayproject", "credential": "openrelayproject"},
                         {"urls": ["turn:openrelay.metered.ca:443"], "username": "openrelayproject", "credential": "openrelayproject"},
                         {"urls": ["turn:openrelay.metered.ca:443?transport=tcp"], "username": "openrelayproject", "credential": "openrelayproject"}
-                        
                       ]
                     }
                   }
                 }
               }
             }
-
         })
+        
 
         /* Following event listener are there to see what's happening on the network*/
         //Listen for peers discovered
@@ -153,8 +150,18 @@ export class libp2pWebRTCStar {
 
     async sendMessage(messageToSend : string, peerMultiAddr : Multiaddr){
       try {
-        const { stream } = await this.libp2pInstance.dialProtocol(peerMultiAddr, [PROTOCOL])
-        //@ts-ignore
+        const { stream } = await this.libp2pInstance.dialProtocol(peerMultiAddr, [PROTOCOL], { 
+          spOptions: {
+            config: {
+              iceServers: [
+                {"urls": "stun:openrelay.metered.ca:80"},
+                {"urls": ["turn:openrelay.metered.ca:80"], "username": "openrelayproject", "credential": "openrelayproject"},
+                {"urls": ["turn:openrelay.metered.ca:443"], "username": "openrelayproject", "credential": "openrelayproject"},
+                {"urls": ["turn:openrelay.metered.ca:443?transport=tcp"], "username": "openrelayproject", "credential": "openrelayproject"}
+              ],
+            },
+          },
+        })
         await pipe([fromString(messageToSend)], stream)
       } catch (err) {
         console.error('Could not send the message', err)

@@ -9,7 +9,7 @@ LABEL org.opencontainers.image.vendor COAST
 
 WORKDIR /usr/app
 
-RUN npm install -g @libp2p/webrtc-star-signalling-server
+RUN npm install -g @libp2p/webrtc-star-signalling-server@^2.0.5
 
 EXPOSE 8015
 
