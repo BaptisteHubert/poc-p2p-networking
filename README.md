@@ -1,3 +1,5 @@
+# ⛔️ This repository has been archived
+It will no longer be maintained.
 # PocP2pNetworking
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.3.5.
